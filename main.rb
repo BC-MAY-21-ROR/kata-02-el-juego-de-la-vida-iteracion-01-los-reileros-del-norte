@@ -15,51 +15,50 @@ class Game
     @columns = gets.chomp.to_i
 
     generate_board
-    print_board @board
     initial_cell
-    puts "\n"
-    print_board @board
-    p next_generation
   end
 
   def generate_board
-    @board = Array.new(@rows){Array.new(@columns){Cell.new}}
+    @board = Array.new(@rows) { Array.new(@columns) { Cell.new } }
   end
 
   def initial_cell
-    middle_row = @rows/2
-    middle_columns = @columns/2
+    middle_row = @rows / 2
+    middle_columns = @columns / 2
     @board[middle_row][middle_columns].vivify
-    @board[middle_row-1][middle_columns-1].vivify
-    @board[middle_row-1][middle_columns].vivify
+    @board[middle_row - 1][middle_columns - 1].vivify
+    @board[middle_row - 1][middle_columns].vivify
   end
 
   # neighbours = [] neighbours<<(@board.cell(self.x - 1, self.y - 1))
   def next_generation
     neighbours = []
-    @board.each_with_index do |row, index|
-      row.each_with_index do |cell, col|
-        p alive_neighbours_count(index, col)
+    @board.each_with_index do |row, r|
+      row.each_with_index do |cell, c|
+        alive_neighbours = alive_neighbours_count(r, c)
+        apply_rules(cell, alive_neighbours.size)
       end
     end
     neighbours
   end
 
-  def alive_neighbours_count(row, col)
+  def apply_rules(cell, alive_neighbours)
+
+  end
+
+  def alive_neighbours_count(row, c)
     # row - 1..n
     neighbours = []
-    for row in [row-1, row, row+1]    # position Y
-      for col in [col-1, col, col+1]  # position X
-        if row > 0 && col > 0
-          if @board[row][col].alive?
-            neighbours.push(true)
-          end
-        end
+     [row - 1, row, row + 1].each do |r|
+      [c - 1, c, c + 1].each do |c|
+        next if r.negative? || r >= @rows
+        next if c.negative? || c >= @columns
+
+        neighbours.push(true) if @board[r][c].alive?
       end
     end
     neighbours
   end
-
 end
 
 game = Game.new
