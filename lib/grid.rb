@@ -17,5 +17,6 @@ module PrinterGame
       end
       puts
     end
+    puts
   end
 end

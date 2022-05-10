@@ -1,6 +1,14 @@
 class Cell
-  def initialize
-    @is_alive = false
+  def initialize(cell = nil)
+    @is_alive = if cell.nil?
+                  false
+                else
+                  cell.alive?
+                end
+  end
+
+  def copy
+    Cell.new(self)
   end
 
   def kill
@@ -12,15 +20,19 @@ class Cell
   end
 
   def to_s
-   if @is_alive == true
-     '*'    
-   else
-     '.'
-   end
+    if @is_alive == true
+      '*'
+    else
+      '.'
+    end
   end
 
   def alive?
     @is_alive
+  end
+
+  def dead?
+   !alive? 
   end
 
 end
