@@ -1,5 +1,5 @@
 class Cell
-   def initialize
+  def initialize
     @is_alive = false
   end
 
@@ -12,7 +12,11 @@ class Cell
   end
 
   def to_s
+   if @is_alive == true
+     '*'    
+   else
      '.'
+   end
   end
 
 end
