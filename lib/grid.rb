@@ -7,20 +7,15 @@ module PrinterGame
 
   def grid_inputs
     welcome
-    puts 'select a number of rows'.yellow
-    rows = gets.chomp.to_i
-    puts 'select a number of columns'.yellow
-    columns = gets.chomp.to_i
-    grid_template(rows, columns)
-
-    [rows, columns].class
+    # [rows, columns].class
   end
 
-  def grid_template(rows, columns)
-    # board = []
-
-    columns && rows.times do |row|
-      puts '.' * row
+  def print_board(board)
+    board.each do |row|
+      row.each do |cell|
+        print cell.to_s
+      end
+      puts
     end
   end
 end
