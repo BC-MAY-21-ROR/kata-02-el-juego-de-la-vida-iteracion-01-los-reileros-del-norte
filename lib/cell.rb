@@ -19,4 +19,8 @@ class Cell
    end
   end
 
+  def alive?
+    @is_alive
+  end
+
 end
