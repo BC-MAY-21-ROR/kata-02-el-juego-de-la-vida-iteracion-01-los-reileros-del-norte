@@ -7,7 +7,6 @@ module PrinterGame
 
   def grid_inputs
     welcome
-    # [rows, columns].class
   end
 
   def print_board(board)

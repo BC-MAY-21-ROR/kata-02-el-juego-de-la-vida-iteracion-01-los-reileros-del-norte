@@ -1,4 +1,4 @@
-require './lib/grid'
+require './lib/board_printer'
 require './lib/cell'
 
 class Game
@@ -9,17 +9,15 @@ class Game
   end
 
   def start
-    puts 'select a number of rows'.yellow
-    @rows = gets.chomp.to_i
-    puts 'select a number of columns'.yellow
-    @columns = gets.chomp.to_i
+    @rows = 10
+    @columns = 10
 
     generate_board
     initial_cells
 
     print_board(@board)
 
-    20.times do |_i|
+    50.times do
       next_generation
       print_board(@board)
       sleep(1)
@@ -41,62 +39,64 @@ class Game
   end
 
   def next_generation
-    copy_board = snapshot
-    @board.each_with_index do |row, r|
-      row.each_with_index do |cell, c|
-        neighbours_count = alive_neighbours_count(copy_board, r, c)
+    snapshot = board_snapshot
+
+    @board.each_with_index do |idx_row, idx_r|
+      idx_row.each_with_index do |cell, idx_c|
+        neighbours_count = alive_neighbours_count(snapshot, idx_r, idx_c)
         apply_rules(cell, neighbours_count)
       end
     end
   end
 
-  def apply_rules(cell, neighbours_count)
-    first_rule(cell, neighbours_count)
-    second_rule(cell, neighbours_count)
-    thrid_rule(cell, neighbours_count)
-    fourth_rule(cell, neighbours_count)
+  def apply_rules(cell, alive_neighbours_count)
+    first_rule(cell, alive_neighbours_count)
+    second_rule(cell, alive_neighbours_count)
+    third_rule(cell, alive_neighbours_count)
+    fourth_rule(cell, alive_neighbours_count)
   end
 
-  def first_rule(cell, neighbours_count)
-    cell.kill if neighbours_count < 2
+  def first_rule(cell, alive_neighbours_count)
+    cell.kill if alive_neighbours_count < 2
   end
 
-  def second_rule(cell, neighbours_count)
-    cell.kill if neighbours_count > 3
+  def second_rule(cell, alive_neighbours_count)
+    cell.kill if alive_neighbours_count > 3
   end
 
-  def thrid_rule(cell, neighbours_count)
+  def third_rule(cell, alive_neighbours_count)
     return if cell.dead?
 
-    cell.vivify if neighbours_count == 2 && neighbours_count == 3
+    cell.vivify if [2, 3].include?(alive_neighbours_count)
   end
 
-  def fourth_rule(cell, neighbours_count)
-    cell.vivify if neighbours_count == 3
+  def fourth_rule(cell, alive_neighbours_count)
+    cell.vivify if alive_neighbours_count == 3
   end
 
-  def alive_neighbours_count(snapshot, row, col)
-    neighbours_count = 0
-    [row - 1, row, row + 1].each do |r|
-      [col - 1, col, col + 1].each do |c|
+  def alive_neighbours_count(board_snapshot, idx_row, idx_col)
+    alive_neighbours_count = 0
+    [idx_row - 1, idx_row, idx_row + 1].each do |r|
+      [idx_col - 1, idx_col, idx_col + 1].each do |c|
         next if r.negative? || r >= @rows
         next if c.negative? || c >= @columns
+        next if idx_row == r && idx_col == c
 
-        neighbours_count += 1 if snapshot[r][c].alive?
+        alive_neighbours_count += 1 if board_snapshot[r][c].alive?
       end
     end
-    neighbours_count
+    alive_neighbours_count
   end
 
-  def snapshot
-    snapshot = []
-    @board.each_with_index do |row, idx|
-      snapshot << []
+  def board_snapshot
+    board_snapshot = []
+    @board.each_with_index do |row, idx_row|
+      board_snapshot << []
       row.each do |cell|
-        snapshot[idx] << cell.copy
+        board_snapshot[idx_row] << cell.copy
       end
     end
-    snapshot
+    board_snapshot
   end
 end
 

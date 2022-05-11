@@ -20,7 +20,7 @@ class Cell
   end
 
   def to_s
-    if @is_alive == true
+    if @is_alive
       '*'
     else
       '.'
@@ -32,7 +32,6 @@ class Cell
   end
 
   def dead?
-   !alive? 
+    !alive?
   end
-
 end
